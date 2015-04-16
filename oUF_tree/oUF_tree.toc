@@ -1,0 +1,9 @@
+## Interface: 60000
+## Title: oUF_|cff00A855tree|r
+## Author: Naisz
+## Version: 0.001 a
+## Notes: oUF layout
+## Dependencies: oUF
+
+layout.lua
+tags.lua

@@ -1,0 +1,8 @@
+  local _, config = ...
+
+  config.cfg = {
+  media = {
+  texture = 'Interface\\AddOns\\oUF_naisz\\media\\statusbar'
+  
+}
+}

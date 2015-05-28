@@ -21,9 +21,11 @@ local frameborder = {
     insets = {top = 1, bottom = 1, left = 1, right = 1},
 }
 
+	local width = 220
+
     --Castbar Coordinates
     local cbx = 0;
-    local cby = -210;
+    local cby = -200;
 
     local activeCastbar = true
 
@@ -204,7 +206,8 @@ local border = function(self)
 end
 -- create Aura's
 local CreateAura = function(self, num)
-    local size = 23
+
+    local size = width/7.96 --23
     local Auras = CreateFrame("Frame", nil, self)
     Auras:SetSize(num * (size + 4), size)
 
@@ -265,11 +268,11 @@ local function Style(self, unit, isSingle)
 
     local health = CreateFrame("StatusBar", nil, self)
     if unit == "player" or unit == "target" then
-    health:SetSize(212, 17)
+    health:SetSize(width, 20)
 	elseif (unit and unit:find("boss%d")) then
-	health:SetSize(160, 17)
+	health:SetSize(width-50, 20)
     elseif unit == "targettarget" or unit == "focus" or unit == "pet" then
-    health:SetSize(80, 24)
+    health:SetSize(width/2, 24)
     end
     health:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
 
@@ -312,11 +315,11 @@ local function Style(self, unit, isSingle)
 if unit == "player" or unit == "target" or (unit and unit:find("boss%d")) then
     local power = CreateFrame("StatusBar", nil, self)
     if unit == "player" or unit == "target" then
-      power:SetSize(212 , 4)
-      power:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0 , -4)
+      power:SetSize(width , 4)
+      power:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0 , -5)
     elseif (unit and unit:find("boss%d")) then
-      power:SetSize(160, 4)
-      power:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0 , -4)
+      power:SetSize(width-50, 4)
+      power:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0 , -5)
     end
 
 
@@ -371,7 +374,7 @@ end
 local RaidIcon = health:CreateTexture(nil, 'OVERLAY')
 RaidIcon:SetSize(17, 17)
 if unit == "target" or unit == "player" then
-RaidIcon:SetPoint("LEFT", power,"LEFT",-5,0)
+RaidIcon:SetPoint("CENTER", health,"CENTER",-8,0)
 elseif unit == "targettarget" or unit == "focus" then
 RaidIcon:SetPoint("CENTER", health, "CENTER",0,12)
 elseif (unit and unit:find("boss%d")) then
@@ -387,7 +390,7 @@ if unit == "target" then
 -- Position and size
 local Threat = health:CreateFontString(nil, 'OVERLAY')
 Threat:SetSize(17, 17)
-Threat:SetPoint("CENTER", self, "CENTER", 32, -12)
+Threat:SetPoint("CENTER", health, "CENTER", 8, 0)
 Threat:SetFont(font,size,"OUTLINEMONOCHROME")
 Threat:SetText("A!")
 Threat:SetTextColor(1, 0, 0)
@@ -401,7 +404,7 @@ end
 local statusIndicator = CreateFrame("Frame")
     statusIndicator:SetFrameLevel(self.Health:GetFrameLevel()+1)
     local statusText = health:CreateFontString(nil,"OVERLAY")
-    statusText:SetPoint("CENTER", self, "CENTER", 0, -12)
+    statusText:SetPoint("CENTER", health, "CENTER", 8, 0)
     statusText:SetFont(font,size,"OUTLINEMONOCHROME")
 
 
@@ -438,9 +441,9 @@ local statusIndicator = CreateFrame("Frame")
 -- AURAS       WIP  --
 --==================--
 if unit == "target" then
-local Buffs = CreateAura(self, 8)
+local Buffs = CreateAura(self, 7)
 
-        Buffs:SetPoint("TOP", self, "TOP", -1, 26)
+        Buffs:SetPoint("BOTTOM", self, "BOTTOM", 3, -36)
 
 		Buffs.disableCooldown = false
         Buffs.initialAnchor = "BOTTOMRIGHT"
@@ -452,8 +455,8 @@ local Buffs = CreateAura(self, 8)
 end
 
 	if unit == "target" then
-		local Debuffs = CreateAura(self, 8)
-        Debuffs:SetPoint("TOP", self, "TOP", 192, 52)
+		local Debuffs = CreateAura(self, 7)
+        Debuffs:SetPoint("BOTTOM", self, "BOTTOM", 197, -69)
 
 
         Debuffs.showDebuffType = false
@@ -473,18 +476,6 @@ end
 		Debuffs:SetPoint("RIGHT", self, "RIGHT", 106, 0)
 	end
 
-if unit == "player" then
-	local Debuffs = CreateAura(self,8)
-	Debuffs:SetPoint("BOTTOM",self,"BOTTOM",192,-30)
-
-	Debuffs.showDebuffType = false
-	Debuffs.disableCooldown = false
-
-	Debuffs.initalAnchor = "BOTTOMRIGHT"
-	Debuffs["growth-x"] = "LEFT"
-	self.Debuffs = Debuffs
-	self.Debuffs.PostCreateIcon = PostCreateIcon
-end
 
 -- CASTBAR OPTION
 
@@ -537,18 +528,22 @@ self.GCD.border = border(gcd)
             self.EclipseBar = EclipseBar
         end
             -]]
+
+
 --==================--
 --      Castbar     --
 --==================--
 if unit == "player" or unit == "target" then
     local Castbar = CreateFrame("StatusBar", nil, self)
-    Castbar:SetHeight(17)
+
     if unit == "player" then
+        Castbar:SetHeight(17)
         Castbar:SetWidth(200)
         Castbar:SetPoint("CENTER",UIParent,"CENTER",cbx,cby)
    	elseif unit == "target" then
-        Castbar:SetWidth(200)
-    	Castbar:SetPoint("CENTER",UIParent,"CENTER",cbx,cby+500)
+        Castbar:SetHeight(24)
+        Castbar:SetWidth(144)
+        Castbar:SetPoint("CENTER",UIParent,"CENTER",cbx, cby-30)
      end   
         -- Add spell text
         local CastText = Castbar:CreateFontString(nil, "OVERLAY")
@@ -558,8 +553,8 @@ if unit == "player" or unit == "target" then
         -- Add spell icon
         local CastIcon = Castbar:CreateTexture(nil, "OVERLAY")
         if unit == "target" then
-            CastIcon:SetSize(17,17)
-            CastIcon:SetPoint("TOPLEFT", Castbar, "TOPLEFT", -20, 0)
+            CastIcon:SetSize(24,24)
+            CastIcon:SetPoint("TOPLEFT", Castbar, "TOPLEFT", -26, 0)
         else
             CastIcon:SetSize(25, 25)
             CastIcon:SetPoint("TOPLEFT", Castbar, "TOPLEFT",-28,0)
@@ -598,7 +593,25 @@ if unit == "player" or unit == "target" then
     self.Castbar.border = border(Castbar)
 end
 end
-
+--==================--
+-- ComboPoints      --
+--==================
+--[[
+if unit == "player" then
+   local CPoints = {}
+   for index = 1, MAX_COMBO_POINTS do
+      local CPoint = self:CreateTexture(nil, 'BACKGROUND')
+   
+      -- Position and size of the combo point.
+      CPoint:SetSize(12, 16)
+      CPoint:SetPoint('TOPLEFT', health, 'BOTTOMLEFT', index * CPoint:GetWidth(), 40)
+   
+      CPoints[index] = CPoint
+   end
+end
+   -- Register with oUF
+   self.CPoints = CPoints
+]]
 --=================--
 -- Range Fader     --
 --=================--
@@ -617,20 +630,20 @@ end
  
     --spawn player
     local player = oUF:Spawn("player")
-    player:SetPoint("CENTER",240,-80)
+    player:SetPoint("CENTER",-260,-100)
  
     --spawn target
     local target = oUF:Spawn("target")
-    target:SetPoint("CENTER",240,-50)
+    target:SetPoint("CENTER",260,-100)
 
     local tot = oUF:Spawn("targettarget")
-    tot:SetPoint("RIGHT",target,"RIGHT",65, 0)
+    tot:SetPoint("BOTTOM",target,"RIGHT",-30, 20)
 
     local pet = oUF:Spawn("pet")
     pet:SetPoint("LEFT",player,"LEFT",-83,0)
 
     local focus = oUF:Spawn("focus")
-    focus:SetPoint("RIGHT",player,"RIGHT",65,0)
+    focus:SetPoint("BOTTOM",player,"RIGHT",-30,20)
 
     --Spawn bossframes
 
@@ -638,9 +651,9 @@ end
     for i = 1, MAX_BOSS_FRAMES do
         boss[i] = oUF:Spawn("boss"..i, "TreeBoss"..i)
             if i == 1 then
-                boss[i]:SetPoint("RIGHT", Minimap, 230, 55)
+                boss[i]:SetPoint("TOPLEFT", UIParent, 205, -20)
             else
-                boss[i]:SetPoint('BOTTOM', boss[i-1], 'BOTTOM', 0, -25)             
+                boss[i]:SetPoint('BOTTOM', boss[i-1], 'BOTTOM', 0, -30)             
             end
-        boss[i]:SetSize(212, 20)
+        boss[i]:SetSize(width, 20)
     end
